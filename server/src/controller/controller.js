@@ -13,6 +13,9 @@ const { addProductcategory, readProductCategory, productCategoryByParentCategory
 //size controller
 const {addSize, readsize, deleteSize, multiDeletesizes, updatesizestatus, readSizetbyID, updatesize} = require("./admin-panel/size/sizeController");
 
+//website user controller
+const { generateOTP } = require("./website/user/userController");
+
 
 
 
@@ -48,6 +51,7 @@ module.exports = {
     updateAdmin,
     generateOTPtoupdateemail,
     updateAdminEmail,
-    productCategoryByParentCategory
+    productCategoryByParentCategory,
+    generateOTP
 
 }

@@ -5,6 +5,7 @@ const colorRouter = require('./router/admin-pannel/color');
 const sizeRouter = require('./router/admin-pannel/size');
 const parentRouter = require('./router/admin-pannel/parent');
 const productCategoryRouter = require('./router/admin-pannel/productCategory');
+const userRouter = require('./router/website/user');
 
 const adminRouter =  express.Router();
 const webRouter =  express.Router();
@@ -16,7 +17,7 @@ adminRouter.use('/size',  sizeRouter);
 adminRouter.use('/parent',  parentRouter);
 adminRouter.use('/product-categoty', productCategoryRouter)
 
-
+webRouter.use('/user', userRouter )
 
 allRoutes.use('/frank-and-ock-services', webRouter);
 allRoutes.use('/admin-panel', adminRouter);

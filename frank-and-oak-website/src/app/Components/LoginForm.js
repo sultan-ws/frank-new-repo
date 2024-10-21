@@ -5,12 +5,63 @@ import { FaArrowRight, FaHeart, FaTag } from "react-icons/fa";
 import { SiGoogle } from "react-icons/si";
 import { BiLogoFacebook } from "react-icons/bi";
 import Link from "next/link";
+import axios from "axios";
 
 const LoginForm = ({ close }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [signUp, setSignUp] = useState(false);
 
   const [formData, setFormData] = useState({});
+  const  [error, setError] = useState({});
+
+
+  const validateForm =  () => {
+    const newErrors =  {};
+    if (formData.f_name) {
+      if (!formData.f_name.trim())  newErrors.f_name =   "Please enter your first name";
+    }
+    else{
+      newErrors.f_name =   "Please enter your first name";
+    }
+
+    if(formData.l_name){
+      if (!formData.l_name.trim())  newErrors.l_name =   "Please enter your last name";
+    }
+    else{
+      newErrors.l_name =   "Please enter your last name";
+    }
+    
+    const emailPateern = /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/
+
+    if  (!emailPateern.test(formData.email))  newErrors.email =   "Please enter your email";
+
+    const Paswordpateren = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    if(!Paswordpateren.test(formData.password))   newErrors.password =   "Please enter your password , Is at least 8 characters long, Contains at least one lowercase letter, Contains at least one uppercase letter,Contains at least one digit";
+
+    setError(newErrors)
+
+    return Object.keys(newErrors).length === 0;
+  }
+
+   
+  const handleGenerateOTP  = (e) => {
+    e.preventDefault();
+    
+   const ifValid = validateForm();
+
+   if(!ifValid)   return setInterval(()=>{ setError({})}, 4000)
+    console.log(formData)
+  
+  axios.post(`${process.env.NEXT_PUBLIC_URL}/frank-and-ock-services/user/generate-otp`, formData)
+  .then((res) => {
+    console.log(res.data)
+  })
+  .catch((error)=>{
+    console.log(error)
+  })
+  }
+
 
   return (
     <div className="w-[600px]  p-[30px] h-[650px] bg-white absolute top-[20px] left-[50%] translate-x-[-50%] overflow-y-scroll">
@@ -112,6 +163,7 @@ const LoginForm = ({ close }) => {
                     className="p-[10px] focus:outline-none w-full border border-black text-[14px]"
                     onChange={(e) => { setFormData({ ...formData, f_name: e.target.value }) }}
                   />
+                   {error.f_name && (<p className="position-absolute bottom-0 bg-red-500">{error.f_name}</p>)}
                 </div>
 
                 <div className="relative">
@@ -124,6 +176,7 @@ const LoginForm = ({ close }) => {
                     className="p-[10px] focus:outline-none w-full border border-black text-[14px]"
                     onChange={(e) => { setFormData({ ...formData, l_name: e.target.value }) }}
                   />
+                    {error.l_name && (<p className="position-absolute bottom-0 bg-red-500">{error.l_name}</p>)}
                 </div>
               </div>
              
@@ -135,7 +188,8 @@ const LoginForm = ({ close }) => {
                 onChange={(e) => { setFormData({ ...formData, email: e.target.value }) }}
                 value={formData.email}
               />
-
+                    {error.email && (<p className="position-absolute bottom-0 bg-red-500">{error.email}</p>)}
+              
               
               <input
                 type={showPassword ? "text" : "password"}
@@ -145,53 +199,33 @@ const LoginForm = ({ close }) => {
                 onChange={(e) => { setFormData({ ...formData, password: e.target.value }) }}
                 value={formData.password}
               />
+                    {error.password && (<p className="position-absolute bottom-0 bg-red-500">{error.password}</p>)}
+
               <span
                 className="absolute top-[180px] font-[500] right-[30px] cursor-pointer text-[12px]"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? "Hide" : "Show"}
               </span>
-              {/* <div className="flex gap-[20px] my-[15px] text-[12px]">
-                <label htmlFor="gender" className="mr-[20px]">
-                  I shop for
-                </label>
-                <input
-                  type="radio"
-                  name="gender"
-                  id="gender"
-                  className="accent-slate-800 cursor-pointer"
-                />
-                <span>Men</span>
-                <input
-                  type="radio"
-                  name="gender"
-                  id="gender"
-                  className="accent-slate-800 cursor-pointer"
-                />
-                <span>Women</span>
-                <input
-                  type="radio"
-                  name="gender"
-                  id="gender"
-                  className="accent-slate-800 cursor-pointer"
-                />
-                <span>All</span>
-              </div> */}
-              {/* <div className="flex gap-[20px] my-[30px] text-[12px] align-middle justify-between">
-                <input
-                  type="checkbox"
-                  className="accent-slate-800 cursor-pointer mr-[20px]"
-                />
-                <span>
-                  <strong>Yes,</strong> sign me up to the Frank And Oak
-                  newsletter to never miss out on product launches and exclusive
-                  promotions.
-                </span>
-              </div> */}
               <button
                 type="button" className="w-full h-[40px] bg-black text-white"
+                onClick={handleGenerateOTP}
               >
                 Genrate OTP
+              </button>
+              <input
+                type="text"
+                name="otp"
+                placeholder="OTP"
+                className="p-[10px] focus:outline-none w-full border border-black text-[14px] my-[10px]"
+                onChange={(e) => { setFormData({ ...formData, password: e.target.value }) }}
+                value={formData.otp}
+              />
+               <button
+                type="button" className="w-full h-[40px] bg-black text-white"
+                onClick={handleGenerateOTP}
+              >
+                Register
               </button>
             </form>
           </div>
