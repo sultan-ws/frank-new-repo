@@ -47,6 +47,8 @@ const LoginForm = ({ close }) => {
    
   const handleGenerateOTP  = (e) => {
     e.preventDefault();
+    console.log(process.env.NEXT_PUBLIC_URL);
+    // return;
     
    const ifValid = validateForm();
 
